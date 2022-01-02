@@ -25,6 +25,28 @@ async function run() {
         console.log('database connected successfully');
         const database = client.db('pheroteam');
         const productCollection = database.collection('product');
+
+
+        //Get Products Api
+        app.get('/product', async (req, res) => {
+            const cursor = productCollection.find({});
+            const product = await cursor.limit(8).toArray();
+            res.send(product)
+        })
+        //Get /moreproduct Api
+        app.get('/moreproduct', async (req, res) => {
+            const cursor = productCollection.find({});
+            const product = await cursor.toArray();
+            res.send(product)
+        })
+        //POST addProduct
+        app.post('/product', async (req, res) => {
+            const product = req.body;
+            // console.log(item);
+            const result = await productCollection.insertOne(product)
+            // console.log(result);
+            res.json(result)
+        })
     }
     finally {
         // await client.close()
