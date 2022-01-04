@@ -31,18 +31,11 @@ async function run() {
 
 
         //Get Products Api
-<<<<<<< HEAD
-        app.get('/product', async (req, res) => {
-            const cursor = productCollection.find({});
-            // const product = await cursor.toArray();
-            const product = await cursor.limit(8).toArray();
-            res.send(product)
-=======
         app.get('/items', async (req, res) => {
             const cursor = itemsCollection.find({});
+            // const items = await cursor.toArray();
             const items = await cursor.limit(8).toArray();
             res.send(items)
->>>>>>> 917e496f8ca3df602eafe9ac78a0dcb3eeda887b
         })
         //Get MoreItems Api
         app.get('/moreitems', async (req, res) => {
