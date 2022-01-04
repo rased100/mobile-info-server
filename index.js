@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config()
 const cors = require('cors');
 const app = express();
@@ -24,29 +25,116 @@ async function run() {
         await client.connect();
         console.log('database connected successfully');
         const database = client.db('pheroteam');
-        const productCollection = database.collection('product');
+        const itemsCollection = database.collection('items');
+        const orderCollection = database.collection('order');
+        const reviewCollection = database.collection('review');
 
 
         //Get Products Api
+<<<<<<< HEAD
         app.get('/product', async (req, res) => {
             const cursor = productCollection.find({});
             // const product = await cursor.toArray();
             const product = await cursor.limit(8).toArray();
             res.send(product)
+=======
+        app.get('/items', async (req, res) => {
+            const cursor = itemsCollection.find({});
+            const items = await cursor.limit(8).toArray();
+            res.send(items)
+>>>>>>> 917e496f8ca3df602eafe9ac78a0dcb3eeda887b
         })
-        //Get /moreproduct Api
-        app.get('/moreproduct', async (req, res) => {
-            const cursor = productCollection.find({});
-            const product = await cursor.toArray();
-            res.send(product)
+        //Get MoreItems Api
+        app.get('/moreitems', async (req, res) => {
+            const cursor = itemsCollection.find({});
+            const items = await cursor.toArray();
+            res.send(items)
         })
-        //POST addProduct
-        app.post('/product', async (req, res) => {
-            const product = req.body;
+        //POST additems API
+        app.post('/items', async (req, res) => {
+            const item = req.body;
             // console.log(item);
-            const result = await productCollection.insertOne(product)
+            const result = await itemsCollection.insertOne(item)
             // console.log(result);
             res.json(result)
+        })
+
+        //Get single services
+        app.get('/items/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: ObjectId(id) };
+            const item = await itemsCollection.findOne(query);
+            res.json(item)
+        })
+
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order)
+            // console.log('order', result);
+            res.json(result)
+        })
+
+        //my order
+        app.get('/myorders', async (req, res) => {
+            const query = { email: req.query.email }
+            const cursor = await orderCollection.find(query).toArray()
+            res.json(cursor)
+
+        })
+        app.put('/myorders', async (req, res) => {
+            const filter = { _id: ObjectId(req.query.id) }
+            const options = { upsert: true }
+            const updateDocument = {
+                $set: {
+                    status: 'Shipped'
+                }
+            }
+            const result = await orderCollection.updateOne(filter, updateDocument, options)
+            res.send(result)
+        })
+        app.delete('/allOrders/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
+            res.json(result)
+        })
+        //ManageAllorders
+        app.get("/allOrders", async (req, res) => {
+            const result = await orderCollection.find({}).toArray();
+            res.json(result);
+        });
+
+        app.put('/allorders', async (req, res) => {
+            const filter = { _id: ObjectId(req.query.id) }
+            const options = { upsert: true }
+            const updateDocument = {
+                $set: {
+                    status: 'Approved'
+                }
+            }
+            const result = await orderCollection.updateOne(filter, updateDocument, options)
+            res.send(result)
+        })
+        app.delete('/moreitems/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await itemsCollection.deleteOne(query);
+            res.json(result)
+        })
+
+        // review
+        app.post("/addReview", async (req, res) => {
+            const user = req.body
+            const result = await reviewCollection.insertOne(user);
+            res.send(result);
+        });
+        app.get('/review', async (req, res) => {
+            const cursor = await reviewCollection.find({}).toArray()
+            res.json(cursor)
+
         })
     }
     finally {
