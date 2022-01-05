@@ -28,6 +28,7 @@ async function run() {
         const itemsCollection = database.collection('items');
         const orderCollection = database.collection('order');
         const reviewCollection = database.collection('review');
+        const usersCollection = database.collection('users');
 
         //Get Products Api
         app.get('/items', async (req, res) => {
@@ -53,7 +54,7 @@ async function run() {
 
         // get my orders api bsp
         app.get('/bestsellingproducts', async (req, res) => {
-            const bsp = req.query.top;
+            const bsp = req.query.bsp;
             const query = { bsp: bsp }
             const cursor = itemsCollection.find(query);
             const bestsellingproducts = await cursor.toArray();
@@ -155,6 +156,35 @@ async function run() {
             res.json(cursor)
 
         })
+
+        //User && Admin api
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { email: email }
+            const user = await usersCollection.findOne(query)
+            let isAdmin = false;
+            if (user?.role === 'admin') {
+                isAdmin = true
+            }
+            res.json({ admin: isAdmin })
+        })
+        app.post('/users', async (req, res) => {
+            const user = req.body
+            const result = await usersCollection.insertOne(user)
+            // console.log(result);
+            res.json(result)
+
+        })
+
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body
+            console.log('put', user);
+            const filter = { email: user.email }
+            const updateDoc = { $set: { role: 'admin' } }
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.json(result)
+        })
+
     }
     finally {
         // await client.close()
