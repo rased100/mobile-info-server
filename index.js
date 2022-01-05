@@ -29,7 +29,6 @@ async function run() {
         const orderCollection = database.collection('order');
         const reviewCollection = database.collection('review');
 
-
         //Get Products Api
         app.get('/items', async (req, res) => {
             const cursor = itemsCollection.find({});
@@ -43,6 +42,33 @@ async function run() {
             const items = await cursor.toArray();
             res.send(items)
         })
+        // get my orders api top
+        app.get('/topproducts', async (req, res) => {
+            const top = req.query.top;
+            const query = { top: top }
+            const cursor = itemsCollection.find(query);
+            const topproducts = await cursor.toArray();
+            res.send(topproducts);
+        })
+
+        // get my orders api bsp
+        app.get('/bestsellingproducts', async (req, res) => {
+            const bsp = req.query.top;
+            const query = { bsp: bsp }
+            const cursor = itemsCollection.find(query);
+            const bestsellingproducts = await cursor.toArray();
+            res.send(bestsellingproducts);
+        })
+
+        // get filter brand name phone
+        app.get('/filterphone', async (req, res) => {
+            const category = req.query.category;
+            const query = { category: category }
+            const cursor = itemsCollection.find(query);
+            const topproducts = await cursor.toArray();
+            res.send(topproducts);
+        })
+
         //POST additems API
         app.post('/items', async (req, res) => {
             const item = req.body;
