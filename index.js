@@ -53,7 +53,7 @@ async function run() {
 
         // get my orders api bsp
         app.get('/bestsellingproducts', async (req, res) => {
-            const bsp = req.query.top;
+            const bsp = req.query.bsp;
             const query = { bsp: bsp }
             const cursor = itemsCollection.find(query);
             const bestsellingproducts = await cursor.toArray();
