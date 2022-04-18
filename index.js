@@ -195,7 +195,7 @@ run().catch(console.dir)
 
 
 app.get('/', (req, res) => {
-    res.send('Running mobile-info Rsd server')
+    res.send('Running mobile-info-node server')
 
 });
 app.listen(port, () => {
