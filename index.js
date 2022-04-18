@@ -15,7 +15,7 @@ app.use(express.json())
 
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.oewpu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER_rsd}:${process.env.DB_PASS_rsd}@cluster0.i4mso.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 console.log(uri);
@@ -24,7 +24,7 @@ async function run() {
     try {
         await client.connect();
         console.log('database connected successfully');
-        const database = client.db('pheroteam');
+        const database = client.db('Mobile_info');
         const itemsCollection = database.collection('items');
         const orderCollection = database.collection('order');
         const reviewCollection = database.collection('review');
@@ -195,7 +195,7 @@ run().catch(console.dir)
 
 
 app.get('/', (req, res) => {
-    res.send('Running p-hero-team server')
+    res.send('Running mobile-info-node server')
 
 });
 app.listen(port, () => {
